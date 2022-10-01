@@ -1,0 +1,178 @@
+{
+  "name": "zachtools",
+  "displayName": "ZachTools",
+  "description": "",
+  "publisher": "EasierTeaching",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.71.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets",
+    "Keymaps",
+    "Extension Packs",
+    "Education"
+  ],
+  "activationEvents": [
+    "onCommand:zachtools.helloWorld"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "terminal": {
+      "MSYS2": {
+        "path": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": [
+          "--login",
+          "-i"
+        ],
+        "env": {
+          "MSYSTEM": "MINGW64",
+          "CHERE_INVOKING": "1"
+        }
+      }
+    },
+    "taskDefinitions": [],
+    "keybindings": [
+      {
+        "key": "alt+up",
+        "command": "workbench.action.terminal.scrollUp",
+        "when": "terminalIsOpen && terminalFocus"
+      },
+      {
+        "key": "alt+down",
+        "command": "workbench.action.terminal.scrollDown",
+        "when": "terminalIsOpen && terminalFocus"
+      },
+      {
+        "key": "ctrl+f",
+        "command": "editor.action.startFindReplaceAction",
+        "when": "findWidgetVisible",
+        "mac": "cmd+f"
+      },
+      {
+        "key": "ctrl+g",
+        "command": "editor.action.showHover",
+        "when": "editorTextFocus && editorHasHoverProvider && !editorReadonly && !editorHoverVisible",
+        "mac": "cmd+g"
+      },
+      {
+        "key": "ctrl+h",
+        "command": "editor.action.quickFix",
+        "when": "editorHasCodeActionsProvider",
+        "mac": "cmd+h"
+      },
+      {
+        "key": "ctrl+`",
+        "command": "workbench.action.terminal.focus",
+        "mac": "ctrl+`"
+      },
+      {
+        "key": "ctrl+`",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "terminalIsOpen && terminalFocus",
+        "mac": "cmd+`"
+      },
+      {
+        "key": "ctrl+w",
+        "command": "workbench.action.terminal.kill",
+        "when": "terminalIsOpen && terminalFocus",
+        "mac": "cmd+w"
+      },
+      {
+        "key": "ctrl+shift+c",
+        "command": "editor.action.commentLine",
+        "when": "editorTextFocus && !editorReadonly",
+        "mac": "cmd+shift+c"
+      },
+      {
+        "key": "ctrl+shift+r",
+        "command": "editor.action.rename",
+        "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly",
+        "mac": "cmd+shift+r"
+      },
+      {
+        "key": "ctrl+k ctrl+a",
+        "command": "java.debug.runJavaFile",
+        "when": "resourceExtname == .java",
+        "mac": "cmd+k cmd+a"
+      },
+      {
+        "key": "ctrl+k ctrl+a",
+        "command": "C_Cpp.BuildAndRunFile",
+        "when": "resourceExtname == .cpp",
+        "mac": "cmd+k cmd+a"
+      },
+      {
+        "key": "ctrl+k ctrl+a",
+        "command": "python.execInTerminal",
+        "when": "resourceExtname == .py",
+        "mac": "cmd+k ctrl+a"
+      },
+      {
+        "key": "ctrl+h",
+        "command": "-editor.action.startFindReplaceAction",
+        "when": "editorFocus || editorIsOpen",
+        "mac": "cmd+h"
+      },
+      {
+        "key": "ctrl+g",
+        "command": "-workbench.action.gotoLine",
+        "mac": "cmd+g"
+      },
+      {
+        "key": "ctrl+shift+c",
+        "command": "-workbench.action.terminal.openNativeConsole",
+        "when": "!terminalFocus",
+        "mac": "cmd+shift+c"
+      }
+    ],
+    "commands": [
+      {
+        "command": "zachtools.helloWorld",
+        "title": "Hello World"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "java",
+        "path": "./javasnip.json"
+      },
+      {
+        "path": "./git.code-snippets"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "test-compile": "tsc -p ./"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "9.0.13",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/node-fetch": "2.6.2",
+    "@types/unzip-stream": "0.3.1",
+    "@types/vscode": "^1.71.0",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
+    "esbuild": "^0.15.10",
+    "eslint": "^8.20.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "all": "^0.0.0",
+    "fs-extra": "^10.1.0",
+    "node-fetch": "^2.6.2",
+    "node-stream-zip": "^1.15.0",
+    "node-zip": "^1.1.1",
+    "unzip-stream": "^0.3.1"
+  }
+}

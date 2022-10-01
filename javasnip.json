@@ -1,0 +1,9 @@
+{
+
+    "Scanner": { 
+        "prefix": "sc", 
+        "body": [
+            "Scanner sc = new Scanner(System.in);"
+        ]
+    }
+}

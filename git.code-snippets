@@ -1,0 +1,73 @@
+{
+	"Git Help": {
+		"prefix": "git",
+		"body": [
+			"git config --global user.name your_user_name",
+			"git config --global user.email email@youremail.com"
+		],
+		"description": "git help"
+	},
+    "javaTemplate": {
+        "isFileTemplate": true,
+        ///"scope": "java, txt",
+
+        "prefix": "java",
+        "body": [
+            "import java.util.*;",
+            "public class ${1:${TM_FILENAME_BASE}}{",
+            "    public static void main(String[] args){",
+            "       $0",
+            "    }",
+            "}",
+
+        ],
+        "description": "Java Template"
+    },
+	"Zach's Settings":{
+		"prefix": "zach's settings",
+		"body": [
+			"//turn off tracking. ",
+			"\"telemetry.telemetryLevel\": \"off\",",
+			"",
+			"//ctrl+scroll zooms in and out",
+			"\"editor.mouseWheelZoom\": true,",
+			"",
+			"//top middle bar ",
+			"\"window.commandCenter\": true,",
+			"",
+			"//makes <= look like 1 symbol",
+			"\"editor.fontLigatures\": true,",
+			"",
+			"//Editor and Terminal Font and Ligatures ",
+			"\"editor.fontSize\": 18,",
+			"\"terminal.integrated.fontSize\": 18,",
+			"\"terminal.integrated.fontWeight\": \"bold\",",
+			"\"terminal.integrated.lineHeight\": 1.2,",
+			"\"editor.fontFamily\": \"Fira Code\",",
+			"\"terminal.integrated.fontFamily\": \"monospace\",",
+			"",
+			"//{} []   <-- how much and what kind help do you want with these",
+			"\"editor.autoClosingBrackets\": \"beforeWhitespace\", ",
+			"\"editor.autoClosingQuotes\": \"never\",",
+			"\"editor.autoClosingDelete\": \"never\",",
+			"\"editor.autoClosingOvertype\": \"auto\",",
+			"",
+			"//Hide Imports ",
+			"\"editor.foldingImportsByDefault\": true,",
+			"",
+			"//Prevents an annoying warning when working on kattis problems",
+			"\"terminal.integrated.enableMultiLinePasteWarning\":false,",
+			"",
+			"//enables clickable links in your editor sometimes annoying",
+			"\"editor.codeLens\": true,",
+			"",
+			"// java's run link above the main method",
+			"\"java.implementationsCodeLens.enabled\": true,",
+			"",
+			"// c++ stuff",
+			"\"C_Cpp.debugShortcut\": true,",
+			"\"C_Cpp.default.cppStandard\": \"c++20\",",
+			"\"C_Cpp.renameRequiresIdentifier\": false,"
+		]
+	}
+} 
