@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
 import { Extract } from 'unzip-stream';
 // import { createWriteStream, PathLike } from 'fs';PathLike
 import {createReadStream,createWriteStream,PathLike,copySync,readdir} from 'fs-extra';
-import { spawn } from 'child_process';
+import { exec  } from 'child_process';
 import { resolve } from 'path';
 import { homedir } from 'os';
 // this method is called when your extension is activated
@@ -31,8 +31,13 @@ const downloadFile = (async (url: URL, path: PathLike) => {
 //     ;
 // }
 
-function win(){
-	spawn("powershell.exe",["dir ./*.ttf | %{ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($_.fullname) }"]);
+async function win(){
+	await new Promise ((res,rej) =>{
+		exec('./font.ps1',{'shell':'powershell.exe'}, (error, stdout, stderr)=> {
+			error ? rej() : res("ha");
+		});
+	});
+	
 }
 
 function mac(){
@@ -45,15 +50,28 @@ function mac(){
 	  });
 	
 
-}
+	}
 function font(){
+	// isWin ? win() : mac()
 	downloadFile(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),resolve(__dirname,"f.zip"))
 		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
-		.then(()=>isWin ? win() : mac())
+		.then(()=>exec('./font.ps1',{'shell':'powershell.exe'}, (error, stdout, stderr)=> vscode.window.showInformationMessage(stdout)))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
 		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
 }
+async function dlInst(f : string, temp : string, out: string){
+	return await downloadFile(new URL(f),resolve(__dirname,temp))
+		.then(()=>createReadStream(resolve(__dirname,temp)).pipe(Extract({ path: resolve(__dirname,out) })))
+		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
+}
 
+// function minGW(){
+// 	if(!isWin) return;
+// 	dlInst("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip","f.zip","font")
+// 		.then(()=>isWin ? win() : mac())
+// 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
+// 		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
+// }
 
   
 export function activate(context: vscode.ExtensionContext) {
