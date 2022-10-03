@@ -58,7 +58,11 @@ function font(){
 }
 
 function minGW(){
- 	if(!isWin) return;
+ 	if(!isWin){
+		vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
+		return;
+	} 
+	vscode.window.showInformationMessage('Hello from Zach!\nDownloading MinGw');
  	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
 		.then(()=>new Promise(wingc))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
@@ -70,7 +74,7 @@ function installFont(){
 }
 
 function installMinGW(){
-	vscode.window.showInformationMessage('Hello from Zach!\nInstalling MinGw');
+	vscode.window.showInformationMessage('Hello from Zach!\nDownloading MinGw');
 	minGW();
 }
 
@@ -89,7 +93,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(d);
 	
 			
-	console.log("yoyo");
+	console.log("changes updated");
 
 }
 
