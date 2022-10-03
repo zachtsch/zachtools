@@ -3,11 +3,13 @@
   "displayName": "ZachTools",
   "description": "",
   "publisher": "EasierTeaching",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.71.0"
   },
-  "repository": {"url": "https://github.com/zachtsch/zachtools.git"},
+  "repository": {
+    "url": "https://github.com/zachtsch/zachtools.git"
+  },
   "license": "license.txt",
   "categories": [
     "Other",
@@ -19,7 +21,7 @@
   "activationEvents": [
     "onCommand:zachtools.installMinGW",
     "onCommand:zachtools.installFont"
-    ],
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "terminal": {
