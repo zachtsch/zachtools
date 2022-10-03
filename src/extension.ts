@@ -64,28 +64,34 @@ function minGW(){
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
 		.catch(x=>vscode.window.showInformationMessage("Follow MSYS2 Instructions.  Leave everything default!!!"));
  }
+function installFont(){
+	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
+	font();
+}
 
-  
+function installMinGW(){
+	vscode.window.showInformationMessage('Hello from Zach!\nInstalling MinGw');
+	minGW();
+}
+
 export function activate(context: vscode.ExtensionContext) {
 	
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "zachtools" is now active!');
+	console.log('Congratulations, your extension "asdfasdfasdfasdfasedfasdf" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	context.subscriptions
-	context.subscriptions.push(
-		vscode.commands.registerCommand("zachtools.installFont", () => {
-			vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
-			font();
-		}));
-	context.subscriptions.push(
-		vscode.commands.registerCommand("zachtools.installMinGW", () => {
-			vscode.window.showInformationMessage('Hello from Zach!\nInstalling MinGw');
-			minGW();
-		}));
+	let d = vscode.commands.registerCommand("zachtools.installFont", () => installFont());
+	console.log("rocko");
+	context.subscriptions.push(d);
+	
+	console.log("what");
+	
+	context.subscriptions.push(vscode.commands.registerCommand("cat.installMinGW", () => installMinGW()));
+			
+	console.log("yoyo");
 
 }
 

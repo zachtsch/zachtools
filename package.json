@@ -3,7 +3,7 @@
   "displayName": "ZachTools",
   "description": "",
   "publisher": "EasierTeaching",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -15,8 +15,7 @@
     "Education"
   ],
   "activationEvents": [
-    "onCommand:zachtools.installFont",
-    "onCommand:zachtools.installMinGW"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -166,7 +165,7 @@
         "title": "Install Font"
       },
       {
-        "command": "zachtools.installMinGW",
+        "command": "cat.installMinGW",
         "title": "Install MinGW"
       }
     ],
