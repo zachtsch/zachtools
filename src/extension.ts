@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
 import { Extract } from 'unzip-stream';
 // import { createWriteStream, PathLike } from 'fs';PathLike
 import {createReadStream,createWriteStream,PathLike,copySync,readdir} from 'fs-extra';
-import { exec  } from 'child_process';
+import { exec,execFile  } from 'child_process';
 import { resolve } from 'path';
 import { homedir } from 'os';
 // this method is called when your extension is activated
@@ -34,7 +34,7 @@ function win(res : Function,rej : Function){
 }
 
 function wingc(res : Function, rej : Function){
-	exec("./g.exe",{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"));
+	execFile("g.exe", (error, stdout, stderr)=> error ? rej() : res("ha"));
 }
 
 function mac(res : Function, rej : Function){
