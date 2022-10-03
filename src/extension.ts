@@ -54,7 +54,10 @@ function font(){
 		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
 		.then(()=>isWin ? new Promise(win) : new Promise(mac))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
-		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
+		.catch(x=>{
+			vscode.window.showInformationMessage("Something Went Wrong!!!");
+			console.log("ERRR",x);
+		});
 }
 
 function minGW(){
