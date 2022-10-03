@@ -13,10 +13,12 @@ import {createReadStream,createWriteStream,PathLike,copySync,readdir} from 'fs-e
 import { exec  } from 'child_process';
 import { resolve } from 'path';
 import { homedir } from 'os';
+import { Func } from 'mocha';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
 const isWin = process.platform === "win32"; //|| process.platform === "win64";
+const psfont = "foreach($font in Get-ChildItem -Path \"$pwd\\font\\ttf\" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) } "
 const downloadFile = (async (url: URL, path: PathLike) => {
 	const res = await fetch(url);
 	const fileStream = createWriteStream(path);
@@ -31,37 +33,30 @@ const downloadFile = (async (url: URL, path: PathLike) => {
 //     ;
 // }
 
-async function win(){
-	await new Promise ((res,rej) =>{
-		exec('./font.ps1',{'shell':'powershell.exe'}, (error, stdout, stderr)=> {
-			error ? rej() : res("ha");
-		});
-	});
-	
+function win(res : Function,rej : Function){
+	exec(psfont,{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"));
 }
 
-function mac(){
+function mac(res : Function, rej : Function){
 	readdir(resolve(__dirname,"font","ttf"), (err, files) => {
-		if (err) throw err;
+		if (err) rej();
 	  
 		files.forEach(file => {
 			copySync(resolve(__dirname, "font", "ttf",file), resolve(homedir(),"Library","Fonts",file));
 		});
-	  });
-	
+	});
+	res();
+}
 
-	}
+
+function cacaw(){
+	vscode.commands.executeCommand("")
+}
 function font(){
-	// isWin ? win() : mac()
 	downloadFile(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),resolve(__dirname,"f.zip"))
 		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
-		.then(()=>exec('./font.ps1',{'shell':'powershell.exe'}, (error, stdout, stderr)=> vscode.window.showInformationMessage(stdout)))
+		.then(()=>isWin ? new Promise(win) : new Promise(mac))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
-		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
-}
-async function dlInst(f : string, temp : string, out: string){
-	return await downloadFile(new URL(f),resolve(__dirname,temp))
-		.then(()=>createReadStream(resolve(__dirname,temp)).pipe(Extract({ path: resolve(__dirname,out) })))
 		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
 }
 
