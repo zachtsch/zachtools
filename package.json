@@ -175,7 +175,7 @@
         "title": "Install Font"
       },
       {
-        "command": "zachtools.zachtools.newJava",
+        "command": "zachtools.newJava",
         "title": "Zach's Create New Java File"
       }
     ],

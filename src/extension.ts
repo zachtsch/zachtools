@@ -94,7 +94,7 @@ async function newJava(){
 	}else{
 		vscode.commands.executeCommand('vscode.newUntitledFile');
 		vscode.commands.executeCommand('vscode.save',f);
-		vscode.commands.executeCommand('vscode.insertSnippet','java')
+		vscode.commands.executeCommand('vscode.insertSnippet','java');
 	}
 }
 
