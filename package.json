@@ -21,7 +21,8 @@
   "activationEvents": [
     "onCommand:zachtools.installMinGW",
     "onCommand:zachtools.installFont",
-    "onCommand:zachtools.newJava"
+    "onCommand:zachtools.newJava",
+    "onCommand:zachtools.newDoug"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -177,6 +178,10 @@
       {
         "command": "zachtools.newJava",
         "title": "Zach's Create New Java File"
+      },
+      {
+        "command": "zachtools.newDoug",
+        "title": "Doug: Create New Java File"
       }
     ],
     "snippets": [

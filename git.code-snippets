@@ -9,12 +9,12 @@
 	},
     "javaTemplate": {
         "isFileTemplate": true,
-        ///"scope": "java, txt",
+        "scope": "java",
 
         "prefix": "java",
         "body": [
             "import java.util.*;",
-            "public class ${1:${TM_FILENAME_BASE}}{",
+            "public class ${TM_FILENAME_BASE}{",
             "    public static void main(String[] args){",
             "       $0",
             "    }",
@@ -23,6 +23,23 @@
         ],
         "description": "Java Template"
     },
+	"dougTemplate":{
+		"isFileTemplate": true,
+        "scope": "java",
+
+        "prefix": "doug",
+        "body": [
+            "import java.util.*; import java.io.*;",
+            "public class ${TM_FILENAME_BASE}{",
+			"    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));",
+            "    public static void main(String[] args) throws Exception{",
+            "       $0",
+            "    }",
+            "}",
+
+        ],
+        "description": "Java Template"
+	},
 	"Zach's Settings":{
 		"prefix": "zach's settings",
 		"body": [

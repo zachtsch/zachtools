@@ -78,23 +78,27 @@ function installFont(){
 	else      macFont();
 }
 
-async function newJava(){
+async function newJava(template : string){
 	const ans = await vscode.window.showInputBox({
 		placeHolder: "Class Name",
 		prompt: "Enter The Name Of Your Class",
 	});
 	
-	if(ans === undefined && ans === '') return;
-	const java = ans!.endsWith(".java") ? parse(ans!).name : ans!;
-	const f = resolve(__dirname,java,".java");
+	if(ans === undefined || ans === '') return;
+	const jlo = ans!.endsWith(".java") ? parse(ans!).name : ans!;
+	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
+	const f = resolve(__dirname,java + ".java");
 
 	if(existsSync(f)){
-		vscode.window.showInformationMessage("{ans!} already exists");
-		vscode.commands.executeCommand('vscode.open',f);
+		vscode.window.showInformationMessage(ans! + " already exists");
+		vscode.commands.executeCommand('vscode.open',vscode.Uri.file(f));
 	}else{
-		vscode.commands.executeCommand('vscode.newUntitledFile');
-		vscode.commands.executeCommand('vscode.save',f);
-		vscode.commands.executeCommand('vscode.insertSnippet','java');
+		writeFile(f,"")
+		.then(()=>vscode.commands.executeCommand('vscode.open',vscode.Uri.file(f)))
+		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}))
+		.catch(x=>console.log("Error writing file", x));
+		
+
 	}
 }
 
@@ -109,7 +113,9 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let d = vscode.commands.registerCommand("zachtools.installFont", () => installFont());
 	let d2 = vscode.commands.registerCommand("zachtools.installMinGW", () => installMYSYS());
-	let d3 = vscode.commands.registerCommand("zachtools.newJava", () => newJava());
+	let d3 = vscode.commands.registerCommand("zachtools.newJava", () => newJava("javaTemplate"));
+	let d4 = vscode.commands.registerCommand("zachtools.newDoug", () => newJava("dougTemplate"));
+	context.subscriptions.push(d4);
 	context.subscriptions.push(d3);
 	context.subscriptions.push(d2);
 	context.subscriptions.push(d);
