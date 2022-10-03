@@ -9,9 +9,9 @@ import fetch from 'node-fetch';
 
 import { Extract } from 'unzip-stream';
 // import { createWriteStream, PathLike } from 'fs';PathLike
-import {createReadStream,createWriteStream,PathLike,copySync,readdir} from 'fs-extra';
+import {createReadStream,createWriteStream,PathLike,copySync,readdir, writeFile,existsSync} from 'fs-extra';
 import { exec,execFile  } from 'child_process';
-import { resolve } from 'path';
+import { resolve,parse } from 'path';
 import { homedir } from 'os';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -63,7 +63,7 @@ function winFont(){
 function minGW(){
 	vscode.window.showInformationMessage('Hello from Zach!\nDownloading MinGw');
  	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
-		.then(()=>new Promise((res,rej)=>execFile("g.exe", (error, stdout, stderr)=> error ? rej() : res("ha"))))
+		.then(()=>new Promise((res,rej)=>execFile(resolve(__dirname,"g.exe"), (error, stdout, stderr)=> error ? rej() : res("ha"))))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
 		.catch(x=>vscode.window.showInformationMessage("Follow MSYS2 Instructions.  Leave everything default!!!"));
 }
@@ -78,9 +78,24 @@ function installFont(){
 	else      macFont();
 }
 
-function installMinGW(){
-	vscode.window.showInformationMessage('Hello from Zach!\nDownloading MinGw');
-	minGW();
+async function newJava(){
+	const ans = await vscode.window.showInputBox({
+		placeHolder: "Class Name",
+		prompt: "Enter The Name Of Your Class",
+	});
+	
+	if(ans === undefined && ans === '') return;
+	const java = ans!.endsWith(".java") ? parse(ans!).name : ans!;
+	const f = resolve(__dirname,java,".java");
+
+	if(existsSync(f)){
+		vscode.window.showInformationMessage("{ans!} already exists");
+		vscode.commands.executeCommand('vscode.open',f);
+	}else{
+		vscode.commands.executeCommand('vscode.newUntitledFile');
+		vscode.commands.executeCommand('vscode.save',f);
+		vscode.commands.executeCommand('vscode.insertSnippet','java')
+	}
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -93,11 +108,12 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let d = vscode.commands.registerCommand("zachtools.installFont", () => installFont());
-	let d2 = vscode.commands.registerCommand("zachtools.installMinGW", () => installMinGW());
+	let d2 = vscode.commands.registerCommand("zachtools.installMinGW", () => installMYSYS());
+	let d3 = vscode.commands.registerCommand("zachtools.newJava", () => newJava());
+	context.subscriptions.push(d3);
 	context.subscriptions.push(d2);
 	context.subscriptions.push(d);
 	
-			
 	console.log("changes updated");
 
 }
