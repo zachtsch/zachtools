@@ -161,12 +161,12 @@
     ],
     "commands": [
       {
-        "command": "zachtools.installFont",
-        "title": "Install Font"
+        "command": "zachtools.installMinGW",
+        "title": "Install MinGW"
       },
       {
-        "command": "cat.installMinGW",
-        "title": "Install MinGW"
+        "command": "zachtools.installFont",
+        "title": "Install Font"
       }
     ],
     "snippets": [

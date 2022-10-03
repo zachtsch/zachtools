@@ -78,18 +78,16 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "asdfasdfasdfasdfasedfasdf" is now active!');
+	console.log('Congratulations, your extension "zachtools" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let d = vscode.commands.registerCommand("zachtools.installFont", () => installFont());
-	console.log("rocko");
+	let d2 = vscode.commands.registerCommand("zachtools.installMinGW", () => installMinGW());
+	context.subscriptions.push(d2);
 	context.subscriptions.push(d);
 	
-	console.log("what");
-	
-	context.subscriptions.push(vscode.commands.registerCommand("cat.installMinGW", () => installMinGW()));
 			
 	console.log("yoyo");
 
