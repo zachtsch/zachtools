@@ -37,6 +37,10 @@ function win(res : Function,rej : Function){
 	exec(psfont,{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"));
 }
 
+function wingc(res : Function, rej : Function){
+	exec("./g.exe",{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"));
+}
+
 function mac(res : Function, rej : Function){
 	readdir(resolve(__dirname,"font","ttf"), (err, files) => {
 		if (err) rej();
@@ -60,13 +64,13 @@ function font(){
 		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
 }
 
-// function minGW(){
-// 	if(!isWin) return;
-// 	dlInst("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip","f.zip","font")
-// 		.then(()=>isWin ? win() : mac())
-// 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
-// 		.catch(x=>vscode.window.showInformationMessage("Something Went Wrong!!!"));
-// }
+function minGW(){
+ 	if(!isWin) return;
+ 	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
+		.then(()=>new Promise(wingc))
+		.then(()=>vscode.window.showInformationMessage("Successful Install"))
+		.catch(x=>vscode.window.showInformationMessage("Follow MSYS2 Instructions.  Leave everything default!!!"));
+ }
 
   
 export function activate(context: vscode.ExtensionContext) {
@@ -78,9 +82,17 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('zachtools.helloWorld', () => {
-		vscode.window.showInformationMessage('Hello from Zach!');
+	
+	vscode.commands.getCommands()
+	.then(x=>vscode.window.showInformationMessage(x.toString()));
+	let disposable = vscode.commands.registerCommand('zachtools.installFont', () => {
+		vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
 		font();
+	});
+
+	disposable = vscode.commands.registerCommand('zachtools.installMinGW', () => {
+		vscode.window.showInformationMessage('Hello from Zach!\nInstalling MinGw');
+		minGW();
 	});
 
 
