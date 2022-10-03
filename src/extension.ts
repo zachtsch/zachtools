@@ -61,10 +61,12 @@ function winFont(){
 }
 
 function minGW(){
-	vscode.window.showInformationMessage('Hello from Zach!\nDownloading MinGw');
+	vscode.window.showInformationMessage('Downloading MinGw.  When Installing Leave All As Default');
  	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
 		.then(()=>new Promise((res,rej)=>execFile(resolve(__dirname,"g.exe"), (error, stdout, stderr)=> error ? rej() : res("ha"))))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
+		.then(()=>exec('pacman -S mingw-w64-x86_64-gcc',{'shell':'MSYS2'}))
+		.then(()=>exec('pacman -S --needed base-devel mingw-w64-x86_64-toolchain',{'shell':'MSYS2'}))
 		.catch(x=>vscode.window.showInformationMessage("Follow MSYS2 Instructions.  Leave everything default!!!"));
 }
 
