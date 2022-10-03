@@ -27,32 +27,32 @@ const downloadFile = (async (url: URL, path: PathLike) : Promise<unknown> => {
 		fileStream.on("finish", resolve);
 	});
 });
-//hi
-
-function win(res : Function,rej : Function){
-	exec(psfont,{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"));
-}
-
-function wingc(res : Function, rej : Function){
-	execFile("g.exe", (error, stdout, stderr)=> error ? rej() : res("ha"));
-}
-
-function mac(res : Function, rej : Function){
-	readdir(resolve(__dirname,"font","ttf"), (err, files) => {
-		if (err) rej();
-	  
-		files.forEach(file => {
-			copySync(resolve(__dirname, "font", "ttf",file), resolve(homedir(),"Library","Fonts",file));
-		});
-	});
-	res();
-}
 
 
-function font(){
+function macFont(){
 	downloadFile(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),resolve(__dirname,"f.zip"))
 		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
-		.then(()=>isWin ? new Promise(win) : new Promise(mac))
+		.then(()=>new Promise((res,rej)=>{
+			readdir(resolve(__dirname,"font","ttf"), (err, files) => {
+				if (err) rej();
+			  
+				files.forEach(file => {
+					copySync(resolve(__dirname, "font", "ttf",file), resolve(homedir(),"Library","Fonts",file));
+				});
+				res("SUCESS");
+			});
+		}))
+		.catch(x=>{
+			vscode.window.showInformationMessage("Something Went Wrong!!!");
+			console.log("ERRR",x);
+		});
+}
+
+function winFont(){
+
+	downloadFile(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),resolve(__dirname,"f.zip"))
+		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
+		.then(()=>new Promise((res,rej)=>exec(psfont,{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"))))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
 		.catch(x=>{
 			vscode.window.showInformationMessage("Something Went Wrong!!!");
@@ -61,19 +61,21 @@ function font(){
 }
 
 function minGW(){
- 	if(!isWin){
-		vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
-		return;
-	} 
 	vscode.window.showInformationMessage('Hello from Zach!\nDownloading MinGw');
  	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
-		.then(()=>new Promise(wingc))
+		.then(()=>new Promise((res,rej)=>execFile("g.exe", (error, stdout, stderr)=> error ? rej() : res("ha"))))
 		.then(()=>vscode.window.showInformationMessage("Successful Install"))
 		.catch(x=>vscode.window.showInformationMessage("Follow MSYS2 Instructions.  Leave everything default!!!"));
- }
+}
+
+function installMYSYS(){
+	if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
+	else       minGW();
+}
 function installFont(){
 	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
-	font();
+	if(isWin) winFont();
+	else      macFont();
 }
 
 function installMinGW(){
