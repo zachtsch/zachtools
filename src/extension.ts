@@ -17,7 +17,7 @@ import { homedir } from 'os';
 // your extension is activated the very first time the command is executed
 
 const isWin = process.platform === "win32"; //|| process.platform === "win64";
-const psfont = "foreach($font in Get-ChildItem -Path \"$pwd\\font\\ttf\" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) } "
+const psfont = "foreach($font in Get-ChildItem -Path \"$pwd\\font\\ttf\" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) } ";
 const downloadFile = (async (url: URL, path: PathLike) : Promise<unknown> => {
 	const res = await fetch(url);
 	const fileStream = createWriteStream(path);
