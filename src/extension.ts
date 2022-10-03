@@ -66,7 +66,7 @@ function minGW(){
 		.then(()=>new Promise((res,rej)=>execFile(resolve(__dirname,"g.exe"), (error, stdout, stderr)=> error ? rej() : res("ha"))))
 		.then(()=>exec('pacman -S mingw-w64-x86_64-gcc',{'shell':'MSYS2'}))
 		.then(()=>exec('pacman -S --needed base-devel mingw-w64-x86_64-toolchain',{'shell':'MSYS2'}))
-		.catch(x=>vscode.window.showInformationMessage());
+		.catch(x=>vscode.window.showInformationMessage("Something went wrong maybe"));
 }
 
 function installMYSYS(){
