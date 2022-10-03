@@ -13,25 +13,21 @@ import {createReadStream,createWriteStream,PathLike,copySync,readdir} from 'fs-e
 import { exec  } from 'child_process';
 import { resolve } from 'path';
 import { homedir } from 'os';
-import { Func } from 'mocha';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
 const isWin = process.platform === "win32"; //|| process.platform === "win64";
 const psfont = "foreach($font in Get-ChildItem -Path \"$pwd\\font\\ttf\" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) } "
-const downloadFile = (async (url: URL, path: PathLike) => {
+const downloadFile = (async (url: URL, path: PathLike) : Promise<unknown> => {
 	const res = await fetch(url);
 	const fileStream = createWriteStream(path);
-	await new Promise((resolve, reject) => {
+	return await new Promise((resolve, reject) => {
 		res.body.pipe(fileStream);
 		res.body.on("error", reject);
 		fileStream.on("finish", resolve);
 	});
 });
 
-// function unzipp(f: PathLike) {
-//     ;
-// }
 
 function win(res : Function,rej : Function){
 	exec(psfont,{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"));
@@ -53,9 +49,6 @@ function mac(res : Function, rej : Function){
 }
 
 
-function cacaw(){
-	vscode.commands.executeCommand("")
-}
 function font(){
 	downloadFile(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),resolve(__dirname,"f.zip"))
 		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
@@ -82,21 +75,18 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	
-	vscode.commands.getCommands()
-	.then(x=>vscode.window.showInformationMessage(x.toString()));
-	let disposable = vscode.commands.registerCommand('zachtools.installFont', () => {
-		vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
-		font();
-	});
+	context.subscriptions
+	context.subscriptions.push(
+		vscode.commands.registerCommand("zachtools.installFont", () => {
+			vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
+			font();
+		}));
+	context.subscriptions.push(
+		vscode.commands.registerCommand("zachtools.installMinGW", () => {
+			vscode.window.showInformationMessage('Hello from Zach!\nInstalling MinGw');
+			minGW();
+		}));
 
-	disposable = vscode.commands.registerCommand('zachtools.installMinGW', () => {
-		vscode.window.showInformationMessage('Hello from Zach!\nInstalling MinGw');
-		minGW();
-	});
-
-
-	context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
