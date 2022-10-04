@@ -99,9 +99,9 @@ async function newJava(template : string){
 		vscode.window.showInformationMessage("Open A Folder!");
 		return;
 	}
-	let wf = vscode.workspace.workspaceFolders[0].uri.fsPath;
+	let wf = vscode.workspace.workspaceFolders[0].uri;
 
-	const full = vscode.Uri.parse(resolve(wf,java));
+	const full = vscode.Uri.joinPath(wf,java);
 
 	console.log(wf,full,java);
     //let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
@@ -113,8 +113,8 @@ async function newJava(template : string){
 		vscode.window.showInformationMessage(ans! + " already exists");
 		vscode.commands.executeCommand('vscode.open',full);
 	}catch{
-		console.log(full.path);
-		writeFile(full.path, "")
+		console.log("heyo",full,full.path);
+		fs.writeFile(full, new Uint8Array())
 		.then(()=>vscode.commands.executeCommand('vscode.open',full))
 		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}));
 	}
