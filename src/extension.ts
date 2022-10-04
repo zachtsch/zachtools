@@ -61,12 +61,16 @@ function winFont(){
 }
 
 function minGW(){
-	// vscode.window.showInformationMessage('Downloading and install MinGw. Leave everything default!!!');
+	vscode.window.showInformationMessage('Downloading and install MinGW. Leave everything default!!!');
  	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
 		.then(()=>new Promise((res,rej)=>execFile(resolve(__dirname,"g.exe"), (error, stdout, stderr)=> error ? rej() : res("ha"))))
-		.then(()=>execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\""))
-		.then(()=>execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\""))
 		.catch(x=>vscode.window.showInformationMessage("Something went wrong maybe"));
+}
+function setupMinGW(){
+	vscode.window.showInformationMessage('Setting Up MinGW');
+	execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\"");
+	execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\"");
+	vscode.window.showInformationMessage('Done');
 }
 
 function installMYSYS(){
@@ -115,8 +119,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let d = vscode.commands.registerCommand("zachtools.installFont", () => installFont());
 	let d2 = vscode.commands.registerCommand("zachtools.installMinGW", () => installMYSYS());
-	let d3 = vscode.commands.registerCommand("zachtools.newJava", () => newJava("javaTemplate"));
-	let d4 = vscode.commands.registerCommand("zachtools.newDoug", () => newJava("dougTemplate"));
+	let d3 = vscode.commands.registerCommand("zachtools.setupMinGW", () => setupMinGW());
+
+	let d4 = vscode.commands.registerCommand("zachtools.newJava", () => newJava("javaTemplate"));
+	let d5 = vscode.commands.registerCommand("zachtools.newDoug", () => newJava("dougTemplate"));
+	context.subscriptions.push(d5);
 	context.subscriptions.push(d4);
 	context.subscriptions.push(d3);
 	context.subscriptions.push(d2);
