@@ -3,7 +3,7 @@
   "displayName": "ZachTools",
   "description": "",
   "publisher": "EasierTeaching",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -162,7 +162,6 @@
         "command": "zachtools.setupMinGW",
         "title": "Setup MinGW"
       },
-
       {
         "command": "zachtools.installFont",
         "title": "Install Font"
