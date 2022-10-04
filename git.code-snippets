@@ -80,6 +80,7 @@
 			"",
 			"// java's run link above the main method",
 			"\"java.implementationsCodeLens.enabled\": true,",
+			"\"java.inlayHints.parameterNames.enabled\": \"none\",",
 			"",
 			"// c++ stuff",
 			"\"C_Cpp.debugShortcut\": true,",
