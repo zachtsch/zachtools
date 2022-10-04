@@ -1,7 +1,7 @@
 {
     "ArrayList":{
         "prefix": ["al","ArrayList","list"],
-        "body": ["ArrayList<${Integer}> list = new ArrayList<>();", "$0"]
+        "body": ["ArrayList<${Integer}> ${list} = new ArrayList<>();", "$0"]
     },
     "Buffered Writer":{
         "prefix": "bw",
