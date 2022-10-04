@@ -99,8 +99,10 @@ async function newJava(template : string){
 		vscode.window.showInformationMessage("Open A Folder!");
 		return;
 	}
-	let wf = vscode.workspace.workspaceFolders[0].uri.path ;
+	let wf = vscode.workspace.workspaceFolders[0].uri.fsPath;
 	const full = vscode.Uri.file(resolve(wf,java));
+
+	console.log(wf,full,java);
     //let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
 
 
