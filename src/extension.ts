@@ -93,18 +93,19 @@ async function newJava(template : string){
 	if(ans === undefined || ans === '') return;
 	const jlo = ans!.endsWith(".java") ? parse(ans!).name : ans!;
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
-	const f = resolve(__dirname,java + ".java");
+	const ws = vscode.window.activeTextEditor?.document.uri.fsPath;
 
-	if(existsSync(f)){
+
+	if(ws === null){
+		vscode.window.showInformationMessage("Please Open A Folder!");
+	}else if(existsSync(resolve(ws!,java))){
 		vscode.window.showInformationMessage(ans! + " already exists");
-		vscode.commands.executeCommand('vscode.open',vscode.Uri.file(f));
+		vscode.commands.executeCommand('vscode.open',vscode.Uri.file(java));
 	}else{
-		writeFile(f,"")
-		.then(()=>vscode.commands.executeCommand('vscode.open',vscode.Uri.file(f)))
+		writeFile(resolve(ws!,java),"")
+		.then(()=>vscode.commands.executeCommand('vscode.open',vscode.Uri.file(resolve(ws!,java))))
 		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}))
 		.catch(x=>console.log("Error writing file", x));
-		
-
 	}
 }
 
