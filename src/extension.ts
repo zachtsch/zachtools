@@ -113,7 +113,8 @@ async function newJava(template : string){
 		vscode.window.showInformationMessage(ans! + " already exists");
 		vscode.commands.executeCommand('vscode.open',full);
 	}catch{
-		fs.writeFile(vscode.Uri.file(java), new Uint8Array())
+		console.log(full.path);
+		writeFile(full.path, "")
 		.then(()=>vscode.commands.executeCommand('vscode.open',full))
 		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}));
 	}
