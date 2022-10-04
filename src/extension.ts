@@ -91,21 +91,28 @@ async function newJava(template : string){
 	});
 	
 	if(ans === undefined || ans === '') return;
-	const jlo = ans!.endsWith(".java") ? parse(ans!).name : ans!;
+	const jlo = ans!.endsWith(".java") ? ans! : ans! + ".java";
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
-	const ws = vscode.window.activeTextEditor?.document.uri.fsPath;
+	const fs = vscode.workspace.fs;
+
+	if(vscode.workspace.workspaceFolders === undefined){
+		vscode.window.showInformationMessage("Open A Folder!");
+		return;
+	}
+	let wf = vscode.workspace.workspaceFolders[0].uri.path ;
+	const full = vscode.Uri.file(resolve(wf,java));
+    //let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
 
 
-	if(ws === null){
-		vscode.window.showInformationMessage("Please Open A Folder!");
-	}else if(existsSync(resolve(ws!,java))){
+	
+	try{
+		await fs.stat(full);
 		vscode.window.showInformationMessage(ans! + " already exists");
-		vscode.commands.executeCommand('vscode.open',vscode.Uri.file(java));
-	}else{
-		writeFile(resolve(ws!,java),"")
-		.then(()=>vscode.commands.executeCommand('vscode.open',vscode.Uri.file(resolve(ws!,java))))
-		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}))
-		.catch(x=>console.log("Error writing file", x));
+		vscode.commands.executeCommand('vscode.open',full);
+	}catch{
+		fs.writeFile(full, new Uint8Array())
+		.then(()=>vscode.commands.executeCommand('vscode.open',full))
+		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}));
 	}
 }
 
