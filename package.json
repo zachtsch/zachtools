@@ -3,7 +3,7 @@
   "displayName": "ZachTools",
   "description": "",
   "publisher": "EasierTeaching",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -34,7 +34,6 @@
           "id": "zachtools.MSYS2"
         }
       ]
-      
     },
     "taskDefinitions": [
       {
