@@ -101,7 +101,7 @@ async function newJava(template : string){
 	}
 	let wf = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
-	if(isWin) wf = wf.substring(1);
+	if(isWin) wf = wf.substring(3);
 	const full = vscode.Uri.file(resolve(wf,java));
 
 	console.log(wf,full,java);
