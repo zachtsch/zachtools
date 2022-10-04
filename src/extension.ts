@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
 import { Extract } from 'unzip-stream';
 // import { createWriteStream, PathLike } from 'fs';PathLike
 import {createReadStream,createWriteStream,PathLike,copySync,readdir, writeFile,existsSync} from 'fs-extra';
-import { exec,execFile  } from 'child_process';
+import { exec,execFile,execSync  } from 'child_process';
 import { resolve,parse } from 'path';
 import { homedir } from 'os';
 // this method is called when your extension is activated
@@ -61,17 +61,18 @@ function winFont(){
 }
 
 function minGW(){
-	vscode.window.showInformationMessage('Downloading and install MinGw. Leave everything default!!!');
+	// vscode.window.showInformationMessage('Downloading and install MinGw. Leave everything default!!!');
  	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
 		.then(()=>new Promise((res,rej)=>execFile(resolve(__dirname,"g.exe"), (error, stdout, stderr)=> error ? rej() : res("ha"))))
-		.then(()=>exec('pacman -S mingw-w64-x86_64-gcc',{'shell':'MSYS2'}))
-		.then(()=>exec('pacman -S --needed base-devel mingw-w64-x86_64-toolchain',{'shell':'MSYS2'}))
+		.then(()=>execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\""))
+		.then(()=>execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\""))
 		.catch(x=>vscode.window.showInformationMessage("Something went wrong maybe"));
 }
 
 function installMYSYS(){
 	if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
 	else       minGW();
+	minGW();
 }
 function installFont(){
 	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
@@ -120,6 +121,11 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(d3);
 	context.subscriptions.push(d2);
 	context.subscriptions.push(d);
+	
+	//	"command": "workbench.action.terminal.newWithProfile"
+	
+	//vscode.window.registerTerminalProfileProvider('zachtools.MSYS2',  () => ({ name: 'Profile from extension', shellPath: 'bash' }));
+		
 	
 	console.log("changes updated");
 
