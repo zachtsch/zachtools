@@ -23,18 +23,10 @@
     "onCommand:zachtools.installFont",
     "onCommand:zachtools.newJava",
     "onCommand:zachtools.newDoug",
-    "onTerminalProfile:zachtools.MSYS2"
+    "onCommand:zachtools.setupMinGW"
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "terminal": {
-      "profiles": [
-        {
-          "title": "MSYS2",
-          "id": "zachtools.MSYS2"
-        }
-      ]
-    },
     "taskDefinitions": [
       {
         "type": "BuildAndRunFile",
@@ -166,6 +158,11 @@
         "command": "zachtools.installMinGW",
         "title": "Install MinGW"
       },
+      {
+        "command": "zachtools.setupMinGW",
+        "title": "Setup MinGW"
+      },
+
       {
         "command": "zachtools.installFont",
         "title": "Install Font"
