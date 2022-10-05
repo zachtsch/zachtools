@@ -99,7 +99,7 @@
         "mac": "cmd+f"
       },
       {
-        "key": "ctrl+g",
+        "key": "ctrl+h",
         "command": "editor.action.showHover",
         "when": "editorTextFocus && editorHasHoverProvider && !editorReadonly && !editorHoverVisible",
         "mac": "cmd+g"
@@ -107,7 +107,7 @@
       {
         "key": "ctrl+h",
         "command": "editor.action.quickFix",
-        "when": "editorHasCodeActionsProvider",
+        "when": "editorHasCodeActionsProvider && editorHoverVisible",
         "mac": "cmd+h"
       },
       {
@@ -162,11 +162,6 @@
         "command": "-editor.action.startFindReplaceAction",
         "when": "editorFocus || editorIsOpen",
         "mac": "cmd+h"
-      },
-      {
-        "key": "ctrl+g",
-        "command": "-workbench.action.gotoLine",
-        "mac": "cmd+g"
       },
       {
         "key": "ctrl+shift+c",

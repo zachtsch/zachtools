@@ -32,10 +32,6 @@ function ws() : vscode.Uri | undefined{
 	if(vscode.workspace.workspaceFolders === null) vscode.window.showInformationMessage("Open A Folder!");
 	return vscode.workspace.workspaceFolders?.[0]?.uri;
 }
-function writeFile(full : vscode.Uri, ar : Uint8Array) : Thenable<void>{
-	return vscode.workspace.fs.writeFile(full,ar );
-	vscode.workspace.fs.
-}
 
 function macFont(){
 	const [w, fs] = [ws(), vscode.workspace.fs]
@@ -116,8 +112,8 @@ function installFont(){
 
 
 async function newJava(template : string){
-	const ws = checkWorkspace();
-	if(ws === null) return;
+	const ww = ws();
+	if(ww === null) return;
 
 	const ans = await vscode.window.showInputBox({
 		placeHolder: "Class Name",
@@ -130,13 +126,13 @@ async function newJava(template : string){
 	//concatenation like this is technically bad I believe
 	const jlo = ans! + ans!.endsWith(".java") ? "" : ".java";
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
-	const full = vscode.Uri.joinPath(ws!,java);
+	const full = vscode.Uri.joinPath(ww!,java);
 	try{
 		await vscode.workspace.fs.stat(full);
 		vscode.window.showInformationMessage(ans! + " already exists");
 		vscode.commands.executeCommand('vscode.open',full);
 	}catch{
-		writeFile(full,new Uint8Array()).then(()=>vscode.commands.executeCommand('vscode.open',full))
+		vscode.workspace.fs.writeFile(full,new Uint8Array()).then(()=>vscode.commands.executeCommand('vscode.open',full))
 		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}));
 	}
 }
