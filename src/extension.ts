@@ -51,11 +51,12 @@ async function winFont(){
 	console.log(full,out,fonts);
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
-		.then(u=>fs.writeFile(full,new Uint8Array(u)))
-		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: "./font" })));
+		.then(u=>fs.writeFile(full,new Uint8Array(u)));
+	
+	createReadStream(".\\f.zip").pipe(Extract({ path: ".\\font" }));
 
 		
-	exec(psfont(fonts.fsPath),{'shell':'powershell.exe'});
+	exec(psfont('.\\font\\ttf'),{'shell':'powershell.exe'});
 }
 
 async function minGW(){
