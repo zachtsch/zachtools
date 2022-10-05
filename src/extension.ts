@@ -24,7 +24,7 @@ function ws() : vscode.Uri | undefined{
 }
 
 async function macFont(){
-	const [w, fs] = [ws(), vscode.workspace.fs]
+	const [w, fs] = [ws(), vscode.workspace.fs];
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
 	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
@@ -33,9 +33,9 @@ async function macFont(){
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
 		.then(u=>fs.writeFile(full,new Uint8Array(u)))
-		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })));
+		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: out })));
 
-	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.rename(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x))));
+	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.copy(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x))));
 		
 }
 
@@ -51,7 +51,7 @@ async function winFont(){
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
 		.then(u=>fs.writeFile(full,new Uint8Array(u)))
-		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })));
+		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: out })));
 
 		
 	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>
