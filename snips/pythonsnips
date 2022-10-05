@@ -1,0 +1,15 @@
+{
+	"Read Ints":{
+		"prefix": "readints",
+		"body": "map(int,input().split())"
+	},
+	"List Ints":{
+		"prefix": "listints",
+		"body": "list(map(int,input().split()))"
+	},
+	"Transpose":{
+		"prefix": "transpose",
+		"body": "def transpose(xs): return list(zip(*xs))"
+	}
+	
+}

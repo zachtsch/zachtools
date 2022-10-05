@@ -17,8 +17,8 @@ import { homedir } from 'os';
 // your extension is activated the very first time the command is executed
 
 const isWin = process.platform === "win32"; //|| process.platform === "win64";
-const psfont = "foreach($font in Get-ChildItem -Path \"$pwd\\font\\ttf\" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) } ";
-const downloadFile = (async (url: URL, path: PathLike) : Promise<unknown> => {
+const psfont = "(New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10)";
+const sdf = (async (url: URL, path: PathLike) : Promise<unknown> => {
 	const res = await fetch(url);
 	const fileStream = createWriteStream(path);
 	return await new Promise((resolve, reject) => {
@@ -28,49 +28,76 @@ const downloadFile = (async (url: URL, path: PathLike) : Promise<unknown> => {
 	});
 });
 
+function ws() : vscode.Uri | undefined{
+	if(vscode.workspace.workspaceFolders === null) vscode.window.showInformationMessage("Open A Folder!");
+	return vscode.workspace.workspaceFolders?.[0]?.uri;
+}
+function writeFile(full : vscode.Uri, ar : Uint8Array) : Thenable<void>{
+	return vscode.workspace.fs.writeFile(full,ar );
+	vscode.workspace.fs.
+}
 
 function macFont(){
-	downloadFile(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),resolve(__dirname,"f.zip"))
-		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
-		.then(()=>new Promise((res,rej)=>{
-			readdir(resolve(__dirname,"font","ttf"), (err, files) => {
-				if (err) rej();
-			  
-				files.forEach(file => {
-					copySync(resolve(__dirname, "font", "ttf",file), resolve(homedir(),"Library","Fonts",file));
-				});
-				res("SUCESS");
-			});
-		}))
-		.catch(x=>{
-			vscode.window.showInformationMessage("Something Went Wrong!!!");
-			console.log("ERRR",x);
-		});
+	const [w, fs] = [ws(), vscode.workspace.fs]
+	if(w === null) return;
+	const full     = vscode.Uri.joinPath(w!,"f.zip");
+	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
+	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
+	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Font")
+	fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
+		.then(response=>response.arrayBuffer())
+		.then(arrayBuf=>new Uint8Array(arrayBuf))
+		.then(u=>fs.writeFile(full,u))
+		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })))
+		.then(()=>fs.readDirectory(fonts))
+		.then(xs=>xs.map(([x])=>x).filter(x => x.endsWith(".tff")))
+		.then(files=>files.forEach(f=>fs.rename(vscode.Uri.file(f),libfonts)))
+		.catch(()=>vscode.window.showInformationMessage("Something Went Wrong Maybe"));
+		
 }
 
 function winFont(){
-
-	downloadFile(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),resolve(__dirname,"f.zip"))
-		.then(()=>createReadStream(resolve(__dirname,"f.zip")).pipe(Extract({ path: resolve(__dirname,"font") })))
-		.then(()=>new Promise((res,rej)=>exec(psfont,{'shell':'powershell.exe'}, (error, stdout, stderr)=> error ? rej() : res("ha"))))
-		.then(()=>vscode.window.showInformationMessage("Successful Install"))
-		.catch(x=>{
-			vscode.window.showInformationMessage("Something Went Wrong!!!");
-			console.log("ERRR",x);
-		});
+	const [w, fs] = [ws(), vscode.workspace.fs]
+	if(w === null) return;
+	const full     = vscode.Uri.joinPath(w!,"f.zip");
+	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
+	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
+	fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
+		.then(response=>response.arrayBuffer())
+		.then(arrayBuf=>new Uint8Array(arrayBuf))
+		.then(u=>fs.writeFile(full,u))
+		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })))
+		.then(()=>fs.readDirectory(fonts))
+		.then(xs=>xs.map(([x])=>x).filter(x => x.endsWith(".tff")))
+		.then(files=>files.forEach(f=>exec(psfont,{'shell':'powershell.exe'})))
+		.catch(()=>vscode.window.showInformationMessage("Lets hope for the best"));
 }
 
 function minGW(){
-	vscode.window.showInformationMessage('Downloading and install MinGW. Leave everything default!!!');
- 	downloadFile(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"),resolve(__dirname,"g.exe"))
-		.then(()=>new Promise((res,rej)=>execFile(resolve(__dirname,"g.exe"), (error, stdout, stderr)=> error ? rej() : res("ha"))))
-		.catch(x=>vscode.window.showInformationMessage("Something went wrong maybe"));
+	const [w, fs] = [ws(), vscode.workspace.fs]
+	if(w === null) return;
+	const full     = vscode.Uri.joinPath(w!,"g.exe");
+	vscode.window.showInformationMessage('Downloading MinGW.');
+	fetch(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"))
+		.then(response=>response.arrayBuffer())
+		.then(arrayBuf=>new Uint8Array(arrayBuf))
+		.then(u=>fs.writeFile(full,u))
+		.catch(x=>vscode.window.showInformationMessage("Caught an error.  Probably nothing to worry about"));
+
+	try{
+		vscode.window.showInformationMessage('Installing MinGW.  Leave everything default!');
+		execSync(full.fsPath);
+		vscode.window.showInformationMessage('Setting Up MinGW');
+		execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\"");
+		execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\"");
+		vscode.window.showInformationMessage('Done');
+	}catch{
+		vscode.window.showInformationMessage("Error Installing MinGW");
+	}
 }
 function setupMinGW(){
-	vscode.window.showInformationMessage('Setting Up MinGW');
 	execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\"");
 	execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\"");
-	vscode.window.showInformationMessage('Done');
 }
 
 function installMYSYS(){
@@ -84,38 +111,32 @@ function installFont(){
 	else      macFont();
 }
 
+
+
+
+
 async function newJava(template : string){
+	const ws = checkWorkspace();
+	if(ws === null) return;
+
 	const ans = await vscode.window.showInputBox({
 		placeHolder: "Class Name",
 		prompt: "Enter The Name Of Your Class",
 	});
 	
-	if(ans === undefined || ans === '') return;
-	const jlo = ans!.endsWith(".java") ? ans! : ans! + ".java";
+	if(ans === undefined || ans === '') return vscode.window.showInformationMessage("No Class Name Given!");
+	if(ans.includes(' '))               return vscode.window.showInformationMessage("Class Names Cannot Contain Spaces!");
+
+	//concatenation like this is technically bad I believe
+	const jlo = ans! + ans!.endsWith(".java") ? "" : ".java";
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
-	const fs = vscode.workspace.fs;
-
-	if(vscode.workspace.workspaceFolders === undefined){
-		vscode.window.showInformationMessage("Open A Folder!");
-		return;
-	}
-	let wf = vscode.workspace.workspaceFolders[0].uri;
-
-	const full = vscode.Uri.joinPath(wf,java);
-
-	console.log(wf,full,java);
-    //let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
-
-
-	
+	const full = vscode.Uri.joinPath(ws!,java);
 	try{
-		await fs.stat(full);
+		await vscode.workspace.fs.stat(full);
 		vscode.window.showInformationMessage(ans! + " already exists");
 		vscode.commands.executeCommand('vscode.open',full);
 	}catch{
-		console.log("heyo",full,full.path);
-		fs.writeFile(full, new Uint8Array())
-		.then(()=>vscode.commands.executeCommand('vscode.open',full))
+		writeFile(full,new Uint8Array()).then(()=>vscode.commands.executeCommand('vscode.open',full))
 		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}));
 	}
 }
@@ -131,13 +152,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let d = vscode.commands.registerCommand("zachtools.installFont", () => installFont());
 	let d2 = vscode.commands.registerCommand("zachtools.installMinGW", () => installMYSYS());
-	let d3 = vscode.commands.registerCommand("zachtools.setupMinGW", () => setupMinGW());
 
 	let d4 = vscode.commands.registerCommand("zachtools.newJava", () => newJava("javaTemplate"));
 	let d5 = vscode.commands.registerCommand("zachtools.newDoug", () => newJava("dougTemplate"));
 	context.subscriptions.push(d5);
 	context.subscriptions.push(d4);
-	context.subscriptions.push(d3);
 	context.subscriptions.push(d2);
 	context.subscriptions.push(d);
 	

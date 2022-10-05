@@ -181,10 +181,6 @@
         "title": "Install MinGW"
       },
       {
-        "command": "zachtools.setupMinGW",
-        "title": "Setup MinGW"
-      },
-      {
         "command": "zachtools.installFont",
         "title": "Install Font"
       },
@@ -200,10 +196,14 @@
     "snippets": [
       {
         "language": "java",
-        "path": "./javasnip.json"
+        "path": "./snips/javasnip.json"
       },
       {
-        "path": "./git.code-snippets"
+        "path": "./snips/git.code-snippets"
+      },
+      {
+        "language": "python",
+        "path": "./snips/pythonsnips"
       }
     ]
   },
