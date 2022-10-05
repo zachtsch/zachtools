@@ -5,14 +5,14 @@
     },
     "Buffered Writer":{
         "prefix": "bw",
-        "body": ["BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));"]
+        "body": ["BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));", "$0"]
     },
     "Buffered Reader":{
         "prefix": "br",
-        "body": ["BufferedReader br = new BufferedReader(new InputStreamReader(System.in));"]
+        "body": ["BufferedReader br = new BufferedReader(new InputStreamReader(System.in));", "$0"]
     },
     "Scanner": { 
         "prefix": "sc", 
-        "body": [ "Scanner sc = new Scanner(System.in);" ]
+        "body": [ "Scanner sc = new Scanner(System.in);", "$0"]
     }
 }

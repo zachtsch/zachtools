@@ -57,6 +57,24 @@
             }
           }
         }
+      },
+      {
+        "type": "BuildAndRunFile",
+        "required": ["java"],
+        "properties": {
+          "task":{
+            "label": "Zach's Run Java File",
+            "command": "java",
+            "args": ["${file}"],
+            "options": {
+              "cwd": "${fileDirname}"
+            },
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            }
+          }
+        }
       }
     ],
     "keybindings": [
