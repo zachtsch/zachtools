@@ -33,52 +33,49 @@ function ws() : vscode.Uri | undefined{
 	return vscode.workspace.workspaceFolders?.[0]?.uri;
 }
 
-function macFont(){
+async function macFont(){
 	const [w, fs] = [ws(), vscode.workspace.fs]
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
 	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
-	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Font")
-	fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
+	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Font");
+	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
-		.then(arrayBuf=>new Uint8Array(arrayBuf))
-		.then(u=>fs.writeFile(full,u))
-		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })))
-		.then(()=>fs.readDirectory(fonts))
-		.then(xs=>xs.map(([x])=>x).filter(x => x.endsWith(".tff")))
-		.then(files=>files.forEach(f=>fs.rename(vscode.Uri.file(f),libfonts)))
-		.catch(()=>vscode.window.showInformationMessage("Something Went Wrong Maybe"));
+		.then(u=>fs.writeFile(full,new Uint8Array(u)))
+		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })));
+
+	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.rename(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x))));
 		
 }
 
-function winFont(){
-	const [w, fs] = [ws(), vscode.workspace.fs]
+async function winFont(){
+	console.log("win 1");
+	const [w, fs] = [ws(), vscode.workspace.fs];
+	console.log(w,fs);
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
 	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
-	fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
+	console.log(full,out,fonts);
+	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
-		.then(arrayBuf=>new Uint8Array(arrayBuf))
-		.then(u=>fs.writeFile(full,u))
-		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })))
-		.then(()=>fs.readDirectory(fonts))
-		.then(xs=>xs.map(([x])=>x).filter(x => x.endsWith(".tff")))
-		.then(files=>files.forEach(f=>exec(psfont,{'shell':'powershell.exe'})))
-		.catch(()=>vscode.window.showInformationMessage("Lets hope for the best"));
+		.then(u=>fs.writeFile(full,new Uint8Array(u)))
+		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })));
+
+	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>exec(psfont,{'shell':'powershell.exe'})));
 }
 
-function minGW(){
-	const [w, fs] = [ws(), vscode.workspace.fs]
+async function minGW(){
+	console.log("party");
+	const [w, fs] = [ws(), vscode.workspace.fs];
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"g.exe");
 	vscode.window.showInformationMessage('Downloading MinGW.');
-	fetch(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"))
+
+	await fetch(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"))
 		.then(response=>response.arrayBuffer())
-		.then(arrayBuf=>new Uint8Array(arrayBuf))
-		.then(u=>fs.writeFile(full,u))
-		.catch(x=>vscode.window.showInformationMessage("Caught an error.  Probably nothing to worry about"));
+		.then(u=>fs.writeFile(full,new Uint8Array(u)));
 
 	try{
 		vscode.window.showInformationMessage('Installing MinGW.  Leave everything default!');
@@ -91,15 +88,11 @@ function minGW(){
 		vscode.window.showInformationMessage("Error Installing MinGW");
 	}
 }
-function setupMinGW(){
-	execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\"");
-	execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\"");
-}
+
 
 function installMYSYS(){
 	if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
-	else       minGW();
-	minGW();
+	else  	   minGW();
 }
 function installFont(){
 	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
@@ -128,6 +121,7 @@ async function newJava(template : string){
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
 	const full = vscode.Uri.joinPath(ww!,java);
 	try{
+		console.log(full);
 		await vscode.workspace.fs.stat(full);
 		vscode.window.showInformationMessage(ans! + " already exists");
 		vscode.commands.executeCommand('vscode.open',full);

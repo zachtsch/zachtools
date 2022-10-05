@@ -22,8 +22,7 @@
     "onCommand:zachtools.installMinGW",
     "onCommand:zachtools.installFont",
     "onCommand:zachtools.newJava",
-    "onCommand:zachtools.newDoug",
-    "onCommand:zachtools.setupMinGW"
+    "onCommand:zachtools.newDoug"
   ],
   "main": "./out/extension.js",
   "contributes": {
