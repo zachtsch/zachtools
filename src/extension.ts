@@ -16,7 +16,8 @@ import { homedir } from 'os';
 // your extension is activated the very first time the command is executed
 
 const isWin = process.platform === "win32"; //|| process.platform === "win64";
-const psfont = "foreach($font in Get-ChildItem -Path \"$pwd\\font\\ttf\" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) } ";
+
+const psfont = (p: string) => `foreach($font in Get-ChildItem -Path "${p}" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) }`;
 
 function ws() : vscode.Uri | undefined{
 	if(vscode.workspace.workspaceFolders === null) vscode.window.showInformationMessage("Open A Folder!");
@@ -51,10 +52,10 @@ async function winFont(){
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
 		.then(u=>fs.writeFile(full,new Uint8Array(u)))
-		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: out })));
+		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: `"${out}"` })));
 
 		
-	exec(psfont,{'shell':'powershell.exe'});
+	exec(psfont(full.fsPath),{'shell':'powershell.exe'});
 }
 
 async function minGW(){
