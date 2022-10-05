@@ -16,7 +16,7 @@ import { homedir } from 'os';
 // your extension is activated the very first time the command is executed
 
 const isWin = process.platform === "win32"; //|| process.platform === "win64";
-const psfont = "(New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10)";
+const psfont = "foreach($font in Get-ChildItem -Path \"$pwd\\font\\ttf\" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) } ";
 
 function ws() : vscode.Uri | undefined{
 	if(vscode.workspace.workspaceFolders === null) vscode.window.showInformationMessage("Open A Folder!");
@@ -54,8 +54,7 @@ async function winFont(){
 		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: out })));
 
 		
-	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>
-			exec(`(New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere("${x}" ,0x10)`,{'shell':'powershell.exe'})));
+	exec(psfont,{'shell':'powershell.exe'});
 }
 
 async function minGW(){
@@ -73,13 +72,17 @@ async function minGW(){
 	try{
 		vscode.window.showInformationMessage('Installing MinGW.  Leave everything default!');
 		execSync(`"${full.fsPath}"`);
+	}catch{}
+
+	try{
 		vscode.window.showInformationMessage('Setting Up MinGW');
 		execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\"");
+	}catch{}
+
+	try{
 		execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\"");
-		vscode.window.showInformationMessage('Done');
-	}catch{
-		vscode.window.showInformationMessage("Error Installing MinGW");
-	}
+	}catch{}
+	vscode.window.showInformationMessage('Done');
 }
 
 
