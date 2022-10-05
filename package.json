@@ -3,7 +3,7 @@
   "displayName": "ZachTools",
   "description": "",
   "publisher": "EasierTeaching",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -60,12 +60,16 @@
       },
       {
         "type": "BuildAndRunFile",
-        "required": ["java"],
+        "required": [
+          "java"
+        ],
         "properties": {
-          "task":{
+          "task": {
             "label": "Zach's Run Java File",
             "command": "java",
-            "args": ["${file}"],
+            "args": [
+              "${file}"
+            ],
             "options": {
               "cwd": "${fileDirname}"
             },
