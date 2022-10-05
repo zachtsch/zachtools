@@ -82,8 +82,9 @@ async function minGW(){
 
 
 function installMYSYS(){
-	if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
-	else  	   minGW();
+	//if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
+	//else
+	  	   minGW();
 }
 function installFont(){
 	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
