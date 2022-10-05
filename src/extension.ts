@@ -53,7 +53,9 @@ async function winFont(){
 		.then(u=>fs.writeFile(full,new Uint8Array(u)))
 		.then(()=>createReadStream(full.fsPath).pipe(Extract({ path: out })));
 
-	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>exec(psfont,{'shell':'powershell.exe'})));
+		
+	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>
+			exec(`(New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere('${x}',0x10)`,{'shell':'powershell.exe'})));
 }
 
 async function minGW(){
@@ -70,7 +72,7 @@ async function minGW(){
 	console.log("Fetch Finished");
 	try{
 		vscode.window.showInformationMessage('Installing MinGW.  Leave everything default!');
-		execSync(`'{full.fsPath}'`);
+		execSync(`'${full.fsPath}'`);
 		vscode.window.showInformationMessage('Setting Up MinGW');
 		execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S mingw-w64-x86_64-gcc\"");
 		execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\"");
