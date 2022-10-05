@@ -9,24 +9,14 @@ import fetch from 'node-fetch';
 
 import { Extract } from 'unzip-stream';
 // import { createWriteStream, PathLike } from 'fs';PathLike
-import {createReadStream,createWriteStream,PathLike,copySync,readdir, writeFile,existsSync} from 'fs-extra';
+import {createReadStream} from 'fs-extra';
 import { exec,execFile,execSync  } from 'child_process';
-import { resolve,parse } from 'path';
 import { homedir } from 'os';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
 const isWin = process.platform === "win32"; //|| process.platform === "win64";
 const psfont = "(New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10)";
-const sdf = (async (url: URL, path: PathLike) : Promise<unknown> => {
-	const res = await fetch(url);
-	const fileStream = createWriteStream(path);
-	return await new Promise((resolve, reject) => {
-		res.body.pipe(fileStream);
-		res.body.on("error", reject);
-		fileStream.on("finish", resolve);
-	});
-});
 
 function ws() : vscode.Uri | undefined{
 	if(vscode.workspace.workspaceFolders === null) vscode.window.showInformationMessage("Open A Folder!");
@@ -121,7 +111,7 @@ async function newJava(template : string){
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
 	const full = vscode.Uri.joinPath(ww!,java);
 	try{
-		console.log(full);
+		console.log("good heavens",jlo,java,full);
 		await vscode.workspace.fs.stat(full);
 		vscode.window.showInformationMessage(ans! + " already exists");
 		vscode.commands.executeCommand('vscode.open',full);
