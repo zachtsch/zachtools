@@ -100,13 +100,13 @@
       {
         "key": "ctrl+h",
         "command": "editor.action.showHover",
-        "when": "editorTextFocus && editorHasHoverProvider && !editorReadonly && !editorHoverVisible",
+        "when": "!editorHoverVisible",
         "mac": "cmd+h"
       },
       {
         "key": "ctrl+h",
         "command": "editor.action.quickFix",
-        "when": "editorHoverVisible && !quickFixWidgetVisible",
+        "when": "editorHoverVisible",
         "mac": "cmd+h"
       },
       {
