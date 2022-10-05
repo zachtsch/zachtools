@@ -30,7 +30,7 @@ async function macFont(){
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
 	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
-	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Font");
+	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Fonts");
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
 		.then(u=>fs.writeFile(full,new Uint8Array(u)))
@@ -52,7 +52,7 @@ async function winFont(){
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
 		.then(u=>fs.writeFile(full,new Uint8Array(u)))
-		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: `"${out}"` })));
+		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: "./font" })));
 
 		
 	exec(psfont(fonts.fsPath),{'shell':'powershell.exe'});
