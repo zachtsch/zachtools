@@ -108,7 +108,7 @@ async function newJava(template : string){
 
 	//concatenation like this is technically bad I believe
 	
-	const jlo = ans.endsWith(".java") ? ans : "${ans}.java";
+	const jlo = ans.endsWith(".java") ? ans : `${ans}.java`;
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
 	const full = vscode.Uri.joinPath(ww!,java);
 	try{
