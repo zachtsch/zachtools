@@ -55,7 +55,7 @@ async function winFont(){
 		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: `"${out}"` })));
 
 		
-	exec(psfont(full.fsPath),{'shell':'powershell.exe'});
+	exec(psfont(fonts.fsPath),{'shell':'powershell.exe'});
 }
 
 async function minGW(){
