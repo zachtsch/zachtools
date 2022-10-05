@@ -16,7 +16,7 @@
             "import java.util.*;",
             "public class ${TM_FILENAME_BASE}{",
             "    public static void main(String[] args){",
-            "       $0",
+            "        $0",
             "    }",
             "}",
 
@@ -33,7 +33,7 @@
             "public class ${TM_FILENAME_BASE}{",
 			"    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));",
             "    public static void main(String[] args) throws Exception{",
-            "       $0",
+            "        $0",
             "    }",
             "}",
 
