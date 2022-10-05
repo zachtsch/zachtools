@@ -103,11 +103,12 @@ async function newJava(template : string){
 		prompt: "Enter The Name Of Your Class",
 	});
 	
-	if(ans === undefined || ans === '') return vscode.window.showInformationMessage("No Class Name Given!");
+	if(ans === undefined || ans === null || ans === '' || ans.length < 1) return vscode.window.showInformationMessage("No Class Name Given!");
 	if(ans.includes(' '))               return vscode.window.showInformationMessage("Class Names Cannot Contain Spaces!");
 
 	//concatenation like this is technically bad I believe
-	const jlo = ans! + ans!.endsWith(".java") ? "" : ".java";
+	
+	const jlo = ans.endsWith(".java") ? ans : "${ans}.java";
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
 	const full = vscode.Uri.joinPath(ww!,java);
 	try{
