@@ -57,16 +57,17 @@ async function winFont(){
 }
 
 async function minGW(){
-	console.log("party");
-	const [w, fs] = [ws(), vscode.workspace.fs];
-	if(w === null) return;
-	const full     = vscode.Uri.joinPath(w!,"g.exe");
+	const [ww, fs] = [ws(), vscode.workspace.fs];
+	if(ww === null) return;
+	const full     = vscode.Uri.joinPath(ww!,"g.exe");
+	console.log(ww,fs,full,full.fsPath);
 	vscode.window.showInformationMessage('Downloading MinGW.');
 
 	await fetch(new URL("https://github.com/msys2/msys2-installer/releases/download/2022-09-04/msys2-x86_64-20220904.exe"))
 		.then(response=>response.arrayBuffer())
 		.then(u=>fs.writeFile(full,new Uint8Array(u)));
 
+	console.log("Fetch Finished");
 	try{
 		vscode.window.showInformationMessage('Installing MinGW.  Leave everything default!');
 		execSync(full.fsPath);
@@ -112,7 +113,6 @@ async function newJava(template : string){
 	const java = jlo.charAt(0).toUpperCase() + jlo.slice(1);
 	const full = vscode.Uri.joinPath(ww!,java);
 	try{
-		console.log("good heavens",jlo,java,full);
 		await vscode.workspace.fs.stat(full);
 		vscode.window.showInformationMessage(ans! + " already exists");
 		vscode.commands.executeCommand('vscode.open',full);
