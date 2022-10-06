@@ -28,14 +28,17 @@ async function macFont(){
 	const [w, fs] = [ws(), vscode.workspace.fs];
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
-	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
+	const out      = vscode.Uri.joinPath(w!,"font");
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
-	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Fonts");
+	
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
-		.then(response=>response.arrayBuffer())
-		.then(u=>fs.writeFile(full,new Uint8Array(u)))
-		.then(()=>createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: out })));
-
+	.then(response=>response.arrayBuffer())
+	.then(u=>fs.writeFile(full,new Uint8Array(u)))
+	.then(()=>fs.createDirectory(out))
+	.then(()=>fs.createDirectory(fonts))
+	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: `${out}` })));
+	
+	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Fonts");
 	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.copy(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x))));
 		
 }
@@ -46,17 +49,22 @@ async function winFont(){
 	console.log(w,fs);
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
-	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
-	const fonts    = vscode.Uri.joinPath(w!,"font","ttf").fsPath;
-	console.log(full,out,fonts);
-	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
-		.then(response=>response.arrayBuffer())
-		.then(u=>fs.writeFile(full,new Uint8Array(u)));
-	
-	createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: ".\\font" }));
+	const out      = vscode.Uri.joinPath(w!,"font");
+	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
+	//console.log("ABCDEF",full,out,full.fsPath);
 
-		
-	exec(psfont(fonts),{'shell':'powershell.exe'});
+	
+	
+	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
+	.then(response=>response.arrayBuffer())
+	.then(u=>fs.writeFile(full,new Uint8Array(u)))
+	.then(()=>fs.createDirectory(out))
+	.then(()=>fs.createDirectory(fonts))
+	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: `${out}` })));
+	
+	
+	;
+	execSync(psfont(fonts.path),{'shell':'powershell.exe'});
 }
 
 async function minGW(){
@@ -89,9 +97,8 @@ async function minGW(){
 
 
 function installMYSYS(){
-	//if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
-	//else
-	  	   minGW();
+	if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
+	else       minGW();
 }
 function installFont(){
 	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
