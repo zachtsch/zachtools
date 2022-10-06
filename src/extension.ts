@@ -36,10 +36,13 @@ async function macFont(){
 	.then(u=>fs.writeFile(full,new Uint8Array(u)))
 	.then(()=>fs.createDirectory(out))
 	.then(()=>fs.createDirectory(fonts))
-	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: `${out}` })));
+	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: 'font' })).on('close',wow));
 	
-	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Fonts");
-	await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.copy(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x))));
+	
+	async function wow(){
+		const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Fonts");
+		await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.copy(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x))));
+	}
 		
 }
 
@@ -49,7 +52,7 @@ async function winFont(){
 	console.log(w,fs);
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
-	const out      = vscode.Uri.joinPath(w!,"font");
+	//const out      = vscode.Uri.joinPath(w!,"font");
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
 	//console.log("ABCDEF",full,out,full.fsPath);
 
@@ -58,13 +61,13 @@ async function winFont(){
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 	.then(response=>response.arrayBuffer())
 	.then(u=>fs.writeFile(full,new Uint8Array(u)))
-	.then(()=>fs.createDirectory(out))
-	.then(()=>fs.createDirectory(fonts))
-	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: `${out}` })));
+	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: 'font' })).on('close',wow));
+
 	
 	
-	;
-	execSync(psfont(fonts.path),{'shell':'powershell.exe'});
+	function wow(){
+		execSync(psfont(fonts.fsPath),{'shell':'powershell.exe'});
+	}
 }
 
 async function minGW(){
@@ -104,6 +107,7 @@ function installFont(){
 	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
 	if(isWin) winFont();
 	else      macFont();
+	vscode.window.showInformationMessage('Finished Installing Font');
 }
 
 
