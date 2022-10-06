@@ -47,16 +47,16 @@ async function winFont(){
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
 	const out      = vscode.Uri.joinPath(w!,"font").fsPath;
-	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
+	const fonts    = vscode.Uri.joinPath(w!,"font","ttf").fsPath;
 	console.log(full,out,fonts);
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 		.then(response=>response.arrayBuffer())
 		.then(u=>fs.writeFile(full,new Uint8Array(u)));
 	
-	createReadStream(".\\f.zip").pipe(Extract({ path: ".\\font" }));
+	createReadStream(`"${full.fsPath}"`).pipe(Extract({ path: ".\\font" }));
 
 		
-	exec(psfont('.\\font\\ttf'),{'shell':'powershell.exe'});
+	exec(psfont(fonts),{'shell':'powershell.exe'});
 }
 
 async function minGW(){
