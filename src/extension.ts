@@ -20,43 +20,35 @@ const isWin = process.platform === "win32"; //|| process.platform === "win64";
 const psfont = (p: string) => `foreach($font in Get-ChildItem -Path "${p}" -File){ (New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($font.FullName,0x10) }`;
 
 function ws() : vscode.Uri | undefined{
-	if(vscode.workspace.workspaceFolders === null) vscode.window.showInformationMessage("Open A Folder!");
+	if(vscode.workspace.workspaceFolders === null || vscode.workspace.workspaceFolders === undefined) vscode.window.showInformationMessage("Open A Folder!");
 	return vscode.workspace.workspaceFolders?.[0]?.uri;
 }
 
 async function macFont(){
 	const [w, fs] = [ws(), vscode.workspace.fs];
-	if(w === null) return;
+	if(w === null || w === undefined) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
 	const out      = vscode.Uri.joinPath(w!,"font");
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
+	const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Fonts");
 	
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 	.then(response=>response.arrayBuffer())
 	.then(u=>fs.writeFile(full,new Uint8Array(u)))
 	.then(()=>fs.createDirectory(out))
 	.then(()=>fs.createDirectory(fonts))
-	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: 'font' })).on('close',wow));
-	
-	
-	async function wow(){
-		const libfonts = vscode.Uri.joinPath(vscode.Uri.file(homedir()),"Library","Fonts");
-		await fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.copy(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x))));
-	}
-		
+	.then(()=>new Promise(r=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: 'font' })).on('close',r)))
+	.then(()=>fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.copy(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x)))));
 }
 
 async function winFont(){
 	console.log("win 1");
 	const [w, fs] = [ws(), vscode.workspace.fs];
 	console.log(w,fs);
-	if(w === null) return;
+	if(w === null || w === undefined) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
 	const out      = vscode.Uri.joinPath(w!,"font");
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
-	//console.log("ABCDEF",full,out,full.fsPath);
-
-	
 	
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 	.then(response=>response.arrayBuffer())
@@ -68,7 +60,7 @@ async function winFont(){
 
 async function minGW(){
 	const [ww, fs] = [ws(), vscode.workspace.fs];
-	if(ww === null) return;
+	if(ww === null || ww === undefined) return;
 	const full     = vscode.Uri.joinPath(ww!,"g.exe");
 	console.log(ww,fs,full,full.fsPath);
 	vscode.window.showInformationMessage('Downloading MinGW.');
@@ -112,7 +104,7 @@ function installFont(){
 
 async function newJava(template : string){
 	const ww = ws();
-	if(ww === null) return;
+	if(ww === null || ww === undefined) return;
 
 	const ans = await vscode.window.showInputBox({
 		placeHolder: "Class Name",
