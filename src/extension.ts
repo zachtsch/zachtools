@@ -52,7 +52,7 @@ async function winFont(){
 	console.log(w,fs);
 	if(w === null) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
-	//const out      = vscode.Uri.joinPath(w!,"font");
+	const out      = vscode.Uri.joinPath(w!,"font");
 	const fonts    = vscode.Uri.joinPath(w!,"font","ttf");
 	//console.log("ABCDEF",full,out,full.fsPath);
 
@@ -61,7 +61,8 @@ async function winFont(){
 	await fetch(new URL("https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"))
 	.then(response=>response.arrayBuffer())
 	.then(u=>fs.writeFile(full,new Uint8Array(u)))
-	.then(()=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: 'font' })))
+	.then(()=>fs.createDirectory(out))
+	.then(()=>new Promise(r=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: `${out.fsPath}` }).on('close',r))))
 	.then(()=>execSync(psfont(fonts.fsPath),{'shell':'powershell.exe'}));
 }
 
