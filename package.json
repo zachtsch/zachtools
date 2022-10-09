@@ -28,31 +28,6 @@
   "main": "./out/extension.js",
   "contributes": {
     "taskDefinitions": [
-      {
-        "type": "rake",
-        "required": [
-          "task"
-        ],
-        "properties": {
-          "task": {
-            "label": "Zach's Run Java File",
-            "command": "java",
-            "args": [
-              "${fileBasename}"
-            ],
-            "options": {
-              "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-              "$java"
-            ],
-            "group": {
-              "kind": "build",
-              "isDefault": true
-            }
-          }
-        }
-      }
     ],
     "keybindings": [
       {
