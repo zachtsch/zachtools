@@ -22,9 +22,7 @@ const psfont = (p: string) => `foreach($font in Get-ChildItem -Path "${p}" -File
 function ws() : vscode.Uri | undefined{
 	if(vscode.workspace.workspaceFolders === null || vscode.workspace.workspaceFolders === undefined) vscode.window.showInformationMessage("Open A Folder!");
 	return vscode.workspace.workspaceFolders?.[0]?.uri;
-}
-
-async function macFont(){
+}async function macFont(){
 	const [w, fs] = [ws(), vscode.workspace.fs];
 	if(w === null || w === undefined) return;
 	const full     = vscode.Uri.joinPath(w!,"f.zip");
@@ -39,9 +37,7 @@ async function macFont(){
 	.then(()=>fs.createDirectory(fonts))
 	.then(()=>new Promise(r=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: 'font' })).on('close',r)))
 	.then(()=>fs.readDirectory(fonts).then(xs=>xs.forEach(([x])=>fs.copy(vscode.Uri.file(x),vscode.Uri.joinPath(libfonts,x)))));
-}
-
-async function winFont(){
+}async function winFont(){
 	console.log("win 1");
 	const [w, fs] = [ws(), vscode.workspace.fs];
 	console.log(w,fs);
@@ -56,9 +52,7 @@ async function winFont(){
 	.then(()=>fs.createDirectory(out))
 	.then(()=>new Promise(r=>createReadStream(`${full.fsPath}`).pipe(Extract({ path: `${out.fsPath}` }).on('close',r))))
 	.then(()=>execSync(psfont(fonts.fsPath),{'shell':'powershell.exe'}));
-}
-
-async function minGW(){
+}async function minGW(){
 	const [ww, fs] = [ws(), vscode.workspace.fs];
 	if(ww === null || ww === undefined) return;
 	const full     = vscode.Uri.joinPath(ww!,"g.exe");
@@ -84,25 +78,15 @@ async function minGW(){
 		execSync("C:\\msys64\\usr\\bin\\mintty.exe /bin/env MSYSTEM=MINGW64 /bin/bash -l -c \"pacman -S --needed base-devel mingw-w64-x86_64-toolchain\"");
 	}catch{}
 	vscode.window.showInformationMessage('Done');
-}
-
-
-function installMYSYS(){
+}function installMYSYS(){
 	if(!isWin) vscode.window.showInformationMessage('Hello from Zach!\nThis command only works on windows');
 	else       minGW();
-}
-function installFont(){
+}function installFont(){
 	vscode.window.showInformationMessage('Hello from Zach!\nInstalling Font');
 	if(isWin) winFont();
 	else      macFont();
 	vscode.window.showInformationMessage('Finished Installing Font');
-}
-
-
-
-
-
-async function newJava(template : string){
+}async function newJava(template : string){
 	const ww = ws();
 	if(ww === null || ww === undefined) return;
 
@@ -127,7 +111,11 @@ async function newJava(template : string){
 		vscode.workspace.fs.writeFile(full,new Uint8Array()).then(()=>vscode.commands.executeCommand('vscode.open',full))
 		.then(()=>vscode.commands.executeCommand('editor.action.insertSnippet',{"name": template}));
 	}
+}function quickFixHover(){
+	vscode.commands.executeCommand("editor.action.showHover");
+	vscode.commands.executeCommand("editor.action.quickFix");
 }
+
 
 export function activate(context: vscode.ExtensionContext) {
 	
@@ -136,22 +124,17 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "zachtools" is now active!');
 
 	// The command has been defined in the package.json file
+	const coms = [];
+	
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let d = vscode.commands.registerCommand("zachtools.installFont", () => installFont());
-	let d2 = vscode.commands.registerCommand("zachtools.installMinGW", () => installMYSYS());
+	coms.push(vscode.commands.registerCommand("zachtools.installFont",  () => installFont()));
+	coms.push(vscode.commands.registerCommand("zachtools.installMinGW", () => installMYSYS()));
+	coms.push(vscode.commands.registerCommand("zachtools.newJava",      () => newJava("javaTemplate")));
+	coms.push(vscode.commands.registerCommand("zachtools.newDoug",      () => newJava("dougTemplate")));
+	coms.push(vscode.commands.registerCommand("zachtools.showHoverFix", () => quickFixHover()));
 
-	let d4 = vscode.commands.registerCommand("zachtools.newJava", () => newJava("javaTemplate"));
-	let d5 = vscode.commands.registerCommand("zachtools.newDoug", () => newJava("dougTemplate"));
-	context.subscriptions.push(d5);
-	context.subscriptions.push(d4);
-	context.subscriptions.push(d2);
-	context.subscriptions.push(d);
-	
-	//	"command": "workbench.action.terminal.newWithProfile"
-	
-	//vscode.window.registerTerminalProfileProvider('zachtools.MSYS2',  () => ({ name: 'Profile from extension', shellPath: 'bash' }));
-		
+	coms.forEach(x=>context.subscriptions.push(x));
 	
 	console.log("changes updated");
 

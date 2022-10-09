@@ -22,56 +22,30 @@
     "onCommand:zachtools.installMinGW",
     "onCommand:zachtools.installFont",
     "onCommand:zachtools.newJava",
-    "onCommand:zachtools.newDoug"
+    "onCommand:zachtools.newDoug",
+    "onCommand:zachtools.showHoverFix"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "taskDefinitions": [
       {
-        "type": "BuildAndRunFile",
+        "type": "rake",
         "required": [
-          "cpp"
-        ],
-        "properties": {
-          "task": {
-            "label": "C/C++: gcc-11 build active file",
-            "command": "C:\\msys64\\usr\\bin\\gcc.exe",
-            "args": [
-              "-fdiagnostics-color=always",
-              "-std=c++20",
-              "-g",
-              "${file}",
-              "-o",
-              "${fileDirname}/${fileBasenameNoExtension}"
-            ],
-            "options": {
-              "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-              "$gcc"
-            ],
-            "group": {
-              "kind": "build",
-              "isDefault": true
-            }
-          }
-        }
-      },
-      {
-        "type": "BuildAndRunFile",
-        "required": [
-          "java"
+          "task"
         ],
         "properties": {
           "task": {
             "label": "Zach's Run Java File",
             "command": "java",
             "args": [
-              "${file}"
+              "${fileBasename}"
             ],
             "options": {
               "cwd": "${fileDirname}"
             },
+            "problemMatcher": [
+              "$java"
+            ],
             "group": {
               "kind": "build",
               "isDefault": true
@@ -99,15 +73,20 @@
       },
       {
         "key": "ctrl+h",
-        "command": "editor.action.showHover",
-        "when": "!editorHoverVisible",
+        "command": "zachtools.showHoverFix",
+        "when": "editorTextFocus && editorHasHoverProvider",
         "mac": "cmd+h"
       },
+    
       {
-        "key": "ctrl+h",
-        "command": "editor.action.quickFix",
-        "when": "editorHoverVisible",
-        "mac": "cmd+h"
+        "key": "ctrl+s",
+        "command": "searchEditorApplyChanges.apply",
+        "when": "inSearchEditor",
+        "mac": "cmd+s"
+      },
+      {
+        "key": "ctrl+k ctrl+h",
+        "command": "search.action.openNewEditor"
       },
       {
         "key": "ctrl+`",
@@ -185,6 +164,10 @@
       {
         "command": "zachtools.newDoug",
         "title": "Doug: Create New Java File"
+      },
+      {
+        "command": "zachtools.showHoverFix",
+        "title": "Show Hover and QuickFix"
       }
     ],
     "snippets": [
